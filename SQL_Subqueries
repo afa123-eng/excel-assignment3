@@ -1,0 +1,131 @@
+Select * FROM employees;
+SELECT name
+FROM employees
+WHERE salary > (
+    SELECT AVG(salary)
+    FROM employees
+);
+SELECT *
+FROM employees
+WHERE department_id = (
+    SELECT department_id
+    FROM employees
+    GROUP BY department_id
+    ORDER BY AVG(salary) DESC
+    LIMIT 1
+);
+SELECT *
+FROM employees
+WHERE emp_id IN (
+    SELECT emp_id
+    FROM sales
+);
+SELECT *
+FROM employees
+WHERE emp_id = (
+    SELECT emp_id
+    FROM sales
+    ORDER BY sale_amount DESC
+    LIMIT 1
+);
+SELECT name
+FROM employees
+WHERE salary > (
+    SELECT salary
+    FROM employees
+    WHERE name = 'Shubham'
+);
+SELECT *
+FROM employees
+WHERE department_id =
+(
+    SELECT department_id
+    FROM employees
+    WHERE name = 'Abhishek'
+)
+AND name <> 'Abhishek';
+SELECT department_name
+FROM departments
+WHERE department_id =
+(
+    SELECT e.department_id
+    FROM employees e
+    JOIN sales s ON e.emp_id = s.emp_id
+    ORDER BY s.sale_amount DESC
+    LIMIT 1
+);
+SELECT DISTINCT e.name
+FROM employees e
+WHERE e.emp_id IN
+(
+    SELECT emp_id
+    FROM sales
+    WHERE sale_amount >
+    (
+        SELECT AVG(sale_amount)
+        FROM sales
+    )
+);
+SELECT SUM(sale_amount) AS total_sales
+FROM sales
+WHERE emp_id IN
+(
+    SELECT emp_id
+    FROM employees
+    WHERE salary >
+    (
+        SELECT AVG(salary)
+        FROM employees
+    )
+);
+SELECT name
+FROM employees
+WHERE emp_id NOT IN
+(
+    SELECT emp_id
+    FROM sales
+);
+SELECT department_name
+FROM departments
+WHERE department_id IN
+(
+    SELECT department_id
+    FROM employees
+    GROUP BY department_id
+    HAVING AVG(salary) > 55000
+);
+SELECT department_name
+FROM departments
+WHERE department_id IN
+(
+    SELECT e.department_id
+    FROM employees e
+    JOIN sales s
+    ON e.emp_id = s.emp_id
+    GROUP BY e.department_id
+    HAVING SUM(s.sale_amount) > 10000
+);
+SELECT name
+FROM employees
+WHERE emp_id =
+(
+    SELECT emp_id
+    FROM sales
+    WHERE sale_amount =
+    (
+        SELECT MAX(sale_amount)
+        FROM sales
+        WHERE sale_amount <
+        (
+            SELECT MAX(sale_amount)
+            FROM sales
+        )
+    )
+);
+SELECT name
+FROM employees
+WHERE salary >
+(
+    SELECT MAX(sale_amount)
+    FROM sales
+);
